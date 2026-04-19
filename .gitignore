@@ -14,4 +14,8 @@ config.json
 
 .venv/
 venv/
+venv-vectcut/
 tmp/
+
+# Test drafts
+dfd_cat_*/

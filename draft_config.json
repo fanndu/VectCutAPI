@@ -1,0 +1,97 @@
+{
+  "project_name": "VectCut视频项目",
+  "description": "可配置的视频草稿生成器",
+  "draft_name": "我的视频项目_第1版",
+
+  "canvas": {
+    "width": 1080,
+    "height": 1920
+  },
+
+  "videos": {
+    "folder_path": "/Users/frank/Downloads/magic/02-选标/1111-200/0x-39-boys-great",
+    "duration_per_video": 4,
+    "files": [
+      "0a-01244--226.mp4",
+      "0a-01244--244.mp4",
+      "0a-01244--240.mp4",
+      "0a-01244--232.mp4",
+      "0a-01199-113.mp4",
+      "0a-01199-125.mp4"
+    ]
+  },
+
+  "voiceovers": {
+    "folder_path": "/Users/frank/Downloads/magic/08-配音",
+    "files": [
+      "v-0v-023-1-HE_COMPLETELY_BROKE_.mp3",
+      "v-0v-023-2-LOOK_WHAT_IS_HIDING_.mp3",
+      "v-0v-023-3-A_BEAUTIFUL_FRIENDSH.mp3",
+      "v-0v-023-4-HIS_SMILE_VANISHED_I.mp3",
+      "v-0v-023-5-NOT_ALL_HEROES_WEAR_.mp3",
+      "v-0v-023-6-HE_OUTSMARTED_THE_EN.mp3"
+    ]
+  },
+
+  "subtitles": {
+    "font": "Coolvetica",
+    "font_size": 15,
+    "font_color": "#FFFFFF",
+    "background_color": "#000000",
+    "background_alpha": 0.7,
+    "position": {
+      "x": 0,
+      "y": -0.8
+    },
+    "items": [
+      {"text": "This is one", "start": 0, "end": 2},
+      {"text": "This is two", "start": 4, "end": 6},
+      {"text": "This is three", "start": 8, "end": 10},
+      {"text": "This is fore", "start": 12, "end": 14},
+      {"text": "This is five", "start": 16, "end": 18},
+      {"text": "This is six", "start": 20, "end": 22}
+    ]
+  },
+
+  "number_titles": {
+    "font": "Exo",
+    "font_size": 13,
+    "shadow_enabled": true,
+    "shadow_color": "#000000",
+    "shadow_alpha": 0.8,
+    "shadow_smoothing": 0.3,
+    "position_x_pixel": -911,
+    "items": [
+      {"text": "1.", "y_pixel": 767, "color": "#fff800"},
+      {"text": "2.", "y_pixel": 405, "color": "#2b9eff"},
+      {"text": "3.", "y_pixel": 64, "color": "#ff0000"},
+      {"text": "4.", "y_pixel": -286, "color": "#ffffff"},
+      {"text": "5.", "y_pixel": -646, "color": "#ffffff"},
+      {"text": "6.", "y_pixel": -991, "color": "#ffffff"}
+    ]
+  },
+
+  "description_titles": {
+    "font": "Exo",
+    "font_size": 9,
+    "font_color": "#FFFFFF",
+    "border_color": "#000000",
+    "border_width": 50.0,
+    "border_alpha": 1.0,
+    "position_x_pixel": -500,
+    "order": "reversed",
+    "items": [
+      {"text": "This is first line", "y_pixel": -991, "start": 0, "end": 4},
+      {"text": "This is second line", "y_pixel": -646, "start": 4, "end": 8},
+      {"text": "This is third line", "y_pixel": -286, "start": 8, "end": 12},
+      {"text": "This is fourth line", "y_pixel": 64, "start": 12, "end": 16},
+      {"text": "This is fivth line", "y_pixel": 405, "start": 16, "end": 20},
+      {"text": "This is sixth line", "y_pixel": 767, "start": 20, "end": 24}
+    ]
+  },
+
+  "output": {
+    "draft_folder": "/Users/frank/Movies/JianyingPro/User Data/Projects/com.lveditor.draft",
+    "api_base_url": "http://localhost:9001"
+  }
+}

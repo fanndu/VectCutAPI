@@ -97,6 +97,8 @@ python generate_draft_from_config.py
 ```json
 "number_titles": {
   "position_x_pixel": -911,     // X坐标（像素值）
+  "intro_animation": "Showing_Right",     // 入场动画类型
+  "intro_animation_duration": 0.1,        // 动画时长（秒）
   "items": [
     {"text": "1.", "y_pixel": 767, "color": "#fff800"},
     {"text": "2.", "y_pixel": 405, "color": "#2b9eff"}
@@ -108,6 +110,7 @@ python generate_draft_from_config.py
 - `position_x_pixel`：所有序号的X坐标（相同）
 - `y_pixel`：每个序号的Y坐标（不同）
 - 序号会在整个视频时长显示
+- `intro_animation`：入场动画类型，可选值见下方"动画效果列表"
 
 ### 📄 替换描述标题
 
@@ -117,6 +120,8 @@ python generate_draft_from_config.py
 "description_titles": {
   "position_x_pixel": -500,     // X坐标（像素值）
   "order": "reversed",            // 顺序："reversed"=反转，"normal"=正常
+  "intro_animation": "Showing_Right",     // 入场动画类型
+  "intro_animation_duration": 0.1,        // 动画时长（秒）
   "items": [
     {"text": "描述文本1", "y_pixel": -991, "start": 0, "end": 4},
     {"text": "描述文本2", "y_pixel": -646, "start": 4, "end": 8}
@@ -128,6 +133,7 @@ python generate_draft_from_config.py
 - `order`：控制Y坐标的对应顺序
   - `"reversed"`：第1个文本使用第6个Y坐标
   - `"normal"`：第1个文本使用第1个Y坐标
+- `intro_animation`：入场动画类型，可选值见下方"动画效果列表"
 
 ## 🎨 样式调整
 
@@ -249,6 +255,45 @@ VectCutAPI/
 
 - 确保字体在 `pyJianYingDraft/metadata/font_meta.py` 中已定义
 - 检查字体名称拼写
+
+## 🎬 动画效果列表
+
+### 入场动画 (Intro Animation)
+
+可以在 `number_titles` 和 `description_titles` 中使用：
+
+- `Showing_Right` - 向右露出 ⭐ (推荐)
+- `Showing_Left` - 向左露出
+- `Showing_Up` - 向上露出
+- `Showing_Down` - 向下露出
+- `Slide_Right` - 向右滑动
+- `Slide_Left` - 向左滑动
+- `Slide_Up` - 向上滑动
+- `Slide_Down` - 向下滑动
+- `Fade_In` - 淡入
+- `Zoom_In` - 放大进入
+- `Zoom_Out` - 缩小进入
+- `Pop_Up` - 弹出
+- `Typewriter` - 打字机效果
+- `Glitch` - 故障风
+- `Spin_In_1` - 旋转进入1
+- `Spin_In_2` - 旋转进入2
+- `Wave_in` - 波浪进入
+- `Bounce_In` - 弹跳进入
+- `Flip_and_jump` - 翻转跳跃
+
+**使用方法**：
+```json
+{
+  "intro_animation": "Showing_Right",
+  "intro_animation_duration": 0.1
+}
+```
+
+**动画时长**：
+- 单位：秒
+- 推荐值：0.1-0.5秒
+- 过长会影响观看体验
 
 ## 📞 技术支持
 

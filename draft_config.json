@@ -61,6 +61,8 @@
     "shadow_alpha": 0.8,
     "shadow_smoothing": 0.3,
     "position_x_pixel": -911,
+    "intro_animation": "Showing_Right",
+    "intro_animation_duration": 0.1,
     "items": [
       {"text": "1.", "y_pixel": 767, "color": "#fff800"},
       {"text": "2.", "y_pixel": 405, "color": "#2b9eff"},
@@ -80,6 +82,8 @@
     "border_alpha": 1.0,
     "position_x_pixel": -500,
     "order": "reversed",
+    "intro_animation": "Showing_Right",
+    "intro_animation_duration": 0.1,
     "items": [
       {"text": "This is first line", "y_pixel": -991, "start": 0, "end": 4},
       {"text": "This is second line", "y_pixel": -646, "start": 4, "end": 8},

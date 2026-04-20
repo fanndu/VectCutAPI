@@ -138,7 +138,8 @@ def create_draft(config):
 
         print(f"  序号{i}: {number['text']} (x={relative_x:.4f}, y={relative_y:.4f}, 颜色:{number['color']})")
 
-        response = requests.post(f"{BASE_URL}/add_text", json={
+        # 构建请求数据
+        request_data = {
             "draft_id": draft_id,
             "text": number['text'],
             "start": 0,
@@ -155,7 +156,15 @@ def create_draft(config):
             "track_name": f"number_{i}",
             "width": config['canvas']['width'],
             "height": config['canvas']['height']
-        })
+        }
+
+        # 添加入场动画
+        if 'intro_animation' in num_config:
+            request_data['intro_animation'] = num_config['intro_animation']
+            if 'intro_animation_duration' in num_config:
+                request_data['intro_duration'] = num_config['intro_animation_duration']
+
+        response = requests.post(f"{BASE_URL}/add_text", json=request_data)
 
         if response.json().get('success'):
             print(f"  ✅ 添加成功")
@@ -171,7 +180,8 @@ def create_draft(config):
 
         print(f"  描述{i}: {desc['text']} ({desc['start']}s-{desc['end']}s, x={relative_x:.4f}, y={relative_y:.4f})")
 
-        response = requests.post(f"{BASE_URL}/add_text", json={
+        # 构建请求数据
+        request_data = {
             "draft_id": draft_id,
             "text": desc['text'],
             "start": desc['start'],
@@ -187,7 +197,15 @@ def create_draft(config):
             "track_name": f"desc_{i}",
             "width": config['canvas']['width'],
             "height": config['canvas']['height']
-        })
+        }
+
+        # 添加入场动画
+        if 'intro_animation' in desc_config:
+            request_data['intro_animation'] = desc_config['intro_animation']
+            if 'intro_animation_duration' in desc_config:
+                request_data['intro_duration'] = desc_config['intro_animation_duration']
+
+        response = requests.post(f"{BASE_URL}/add_text", json=request_data)
 
         if response.json().get('success'):
             print(f"  ✅ 添加成功")

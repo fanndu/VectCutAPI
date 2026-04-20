@@ -7,6 +7,7 @@ import os
 import requests
 import shutil
 import subprocess
+from datetime import datetime
 
 BASE_URL = "http://localhost:9001"
 
@@ -100,7 +101,52 @@ def create_draft(config):
         if response.json().get('success'):
             print(f"  ✅ 添加成功")
 
-    # 3. 添加字幕
+    # 3. 添加大标题
+    if config.get('main_title', {}).get('enabled', False):
+        print(f"\n🎯 添加大标题...")
+        title_config = config['main_title']
+
+        # 转换像素坐标为相对坐标
+        relative_x = title_config['position']['x_pixel'] / config['canvas']['width']
+        relative_y = title_config['position']['y_pixel'] / config['canvas']['height']
+
+        print(f"  大标题: {title_config['text'].replace(chr(10), ' ')} (x={relative_x:.3f}, y={relative_y:.3f})")
+
+        # 构建请求数据
+        request_data = {
+            "draft_id": draft_id,
+            "text": title_config['text'],
+            "start": 0,
+            "end": total_duration,
+            "font": title_config['font'],
+            "font_size": title_config['font_size'],
+            "font_color": title_config['font_color'],
+            "transform_x": relative_x,
+            "transform_y": relative_y,
+            "track_name": "main_title",
+            "width": config['canvas']['width'],
+            "height": config['canvas']['height']
+        }
+
+        # 添加多样式颜色配置
+        if 'text_styles' in title_config and title_config['text_styles']:
+            request_data['text_styles'] = []
+            for style in title_config['text_styles']:
+                request_data['text_styles'].append({
+                    'start': style['start'],
+                    'end': style['end'],
+                    'style': {
+                        'color': style['color']
+                    }
+                })
+            print(f"  多样式颜色: {len(title_config['text_styles'])}个样式")
+
+        response = requests.post(f"{BASE_URL}/add_text", json=request_data)
+
+        if response.json().get('success'):
+            print(f"  ✅ 大标题添加成功")
+
+    # 4. 添加字幕
     print(f"\n📝 添加{len(config['subtitles']['items'])}个字幕...")
     sub_config = config['subtitles']
 
@@ -127,7 +173,7 @@ def create_draft(config):
         if response.json().get('success'):
             print(f"  ✅ 添加成功")
 
-    # 4. 添加序号标题
+    # 5. 添加序号标题
     print(f"\n🔢 添加{len(config['number_titles']['items'])}个序号标题...")
     num_config = config['number_titles']
 
@@ -169,7 +215,7 @@ def create_draft(config):
         if response.json().get('success'):
             print(f"  ✅ 添加成功")
 
-    # 5. 添加描述标题
+    # 6. 添加描述标题
     print(f"\n📄 添加{len(config['description_titles']['items'])}个描述标题...")
     desc_config = config['description_titles']
 
@@ -220,36 +266,6 @@ def create_draft(config):
     api_path = os.path.join(os.getcwd(), draft_id)
     capcut_path = os.path.join(config['output']['draft_folder'], draft_id)
 
-    # 修复路径
-    if os.path.exists(api_path):
-        json_file = os.path.join(api_path, "draft_info.json")
-        with open(json_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-
-        # 修复视频路径
-        videos_data = data.get('materials', {}).get('videos', [])
-        for video in videos_data:
-            old_path = video.get('path', '')
-            if not os.path.isabs(old_path):
-                filename = os.path.basename(old_path)
-                new_path = os.path.join(capcut_path, "assets", "video", filename)
-                video['path'] = new_path
-            remote_url = video.get('remote_url', '')
-            if remote_url and not remote_url.startswith('http'):
-                video['remote_url'] = ''
-
-        # 修复音频路径
-        audios_data = data.get('materials', {}).get('audios', [])
-        for audio in audios_data:
-            old_path = audio.get('path', '')
-            if not os.path.isabs(old_path):
-                filename = os.path.basename(old_path)
-                new_path = os.path.join(capcut_path, "assets", "audio", filename)
-                audio['path'] = new_path
-
-        with open(json_file, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-
     # 复制到剪映目录
     if os.path.exists(capcut_path):
         shutil.rmtree(capcut_path)
@@ -261,19 +277,70 @@ def create_draft(config):
         print(f"❌ 本地草稿不存在")
         return None
 
-    # 自定义草稿名称
+    # 自定义草稿名称（支持时间戳占位符）
     custom_name = config.get('draft_name', '').strip()
+    if '{timestamp}' in custom_name:
+        # 生成时间戳格式：20240420_143025
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        custom_name = custom_name.replace('{timestamp}', timestamp)
+        print(f"📅 草稿名称时间戳: {timestamp}")
+
+    final_path = capcut_path  # 默认使用draft_id作为路径
     if custom_name:
         old_path = capcut_path
-        new_path = os.path.join(config['output']['draft_folder'], custom_name)
+        final_path = os.path.join(config['output']['draft_folder'], custom_name)
 
-        if os.path.exists(new_path):
+        if os.path.exists(final_path):
             print(f"⚠️  目标名称已存在，将覆盖")
-            shutil.rmtree(new_path)
+            shutil.rmtree(final_path)
 
-        shutil.move(old_path, new_path)
+        shutil.move(old_path, final_path)
         print(f"✅ 草稿已重命名为: {custom_name}")
+
+    # 修复路径（在重命名之后）
+    json_file = os.path.join(final_path, "draft_info.json")
+    if os.path.exists(json_file):
+        with open(json_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        # 修复视频路径 - 将旧的draft_id路径替换为新的final_path
+        videos_data = data.get('materials', {}).get('videos', [])
+        for video in videos_data:
+            old_path = video.get('path', '')
+            # 检查路径中是否包含旧的draft_id，如果有则替换
+            if draft_id in old_path:
+                filename = os.path.basename(old_path)
+                new_path = os.path.join(final_path, "assets", "video", filename)
+                video['path'] = new_path
+            elif not os.path.isabs(old_path):
+                filename = os.path.basename(old_path)
+                new_path = os.path.join(final_path, "assets", "video", filename)
+                video['path'] = new_path
+            remote_url = video.get('remote_url', '')
+            if remote_url and not remote_url.startswith('http'):
+                video['remote_url'] = ''
+
+        # 修复音频路径 - 将旧的draft_id路径替换为新的final_path
+        audios_data = data.get('materials', {}).get('audios', [])
+        for audio in audios_data:
+            old_path = audio.get('path', '')
+            # 检查路径中是否包含旧的draft_id，如果有则替换
+            if draft_id in old_path:
+                filename = os.path.basename(old_path)
+                new_path = os.path.join(final_path, "assets", "audio", filename)
+                audio['path'] = new_path
+            elif not os.path.isabs(old_path):
+                filename = os.path.basename(old_path)
+                new_path = os.path.join(final_path, "assets", "audio", filename)
+                audio['path'] = new_path
+
+        with open(json_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+    if custom_name:
         return custom_name
+    else:
+        return draft_id
 
     return draft_id
 
@@ -293,6 +360,7 @@ def main():
         print(f"\n📋 统计信息:")
         print(f"  📹 视频: {len(config['videos']['files'])} 个")
         print(f"  🎤 配音: {len(config['voiceovers']['files'])} 个")
+        print(f"  🎯 大标题: {1 if config.get('main_title', {}).get('enabled', False) else 0} 个")
         print(f"  📝 字幕: {len(config['subtitles']['items'])} 个")
         print(f"  🔢 序号: {len(config['number_titles']['items'])} 个")
         print(f"  📄 描述: {len(config['description_titles']['items'])} 个")

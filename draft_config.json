@@ -1,7 +1,7 @@
 {
   "project_name": "VectCut视频项目",
   "description": "可配置的视频草稿生成器",
-  "draft_name": "我的视频项目_动画测试",
+  "draft_name": "动画测试_{timestamp}",
 
   "canvas": {
     "width": 1080,
@@ -91,6 +91,30 @@
       {"text": "This is fourth line", "y_pixel": 64, "start": 12, "end": 16},
       {"text": "This is fivth line", "y_pixel": 405, "start": 16, "end": 20},
       {"text": "This is sixth line", "y_pixel": 767, "start": 20, "end": 24}
+    ]
+  },
+
+  "main_title": {
+    "enabled": true,
+    "text": "Ranking Funniest\nRandom Moments",
+    "font": "Coolvetica",
+    "font_size": 13,
+    "font_color": "#FFFFFF",
+    "position": {
+      "x_pixel": 0,
+      "y_pixel": 1400
+    },
+    "text_styles": [
+      {
+        "start": 8,
+        "end": 16,
+        "color": "#fff800"
+      },
+      {
+        "start": 17,
+        "end": 24,
+        "color": "#2b9eff"
+      }
     ]
   },
 

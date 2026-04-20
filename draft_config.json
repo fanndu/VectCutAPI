@@ -1,7 +1,7 @@
 {
   "project_name": "VectCut视频项目",
   "description": "可配置的视频草稿生成器",
-  "draft_name": "我的视频项目_第1版",
+  "draft_name": "我的视频项目_动画测试",
 
   "canvas": {
     "width": 1080,
@@ -61,7 +61,7 @@
     "shadow_alpha": 0.8,
     "shadow_smoothing": 0.3,
     "position_x_pixel": -911,
-    "intro_animation": "Showing_Right",
+    "intro_animation": "向右露出",
     "intro_animation_duration": 0.1,
     "items": [
       {"text": "1.", "y_pixel": 767, "color": "#fff800"},
@@ -82,7 +82,7 @@
     "border_alpha": 1.0,
     "position_x_pixel": -500,
     "order": "reversed",
-    "intro_animation": "Showing_Right",
+    "intro_animation": "向右露出",
     "intro_animation_duration": 0.1,
     "items": [
       {"text": "This is first line", "y_pixel": -991, "start": 0, "end": 4},

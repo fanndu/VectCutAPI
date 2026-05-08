@@ -1,0 +1,16 @@
+{
+  "app_id": "your_feishu_app_id_here",
+  "app_secret": "your_feishu_app_secret_here",
+  "ranking_topic_table": {
+    "url": "",
+    "app_id": "",
+    "table_id": "",
+    "view_id": ""
+  },
+  "ranking_make_table": {
+    "url": "",
+    "app_id": "",
+    "table_id": "",
+    "view_id": ""
+  }
+}

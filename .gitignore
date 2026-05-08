@@ -25,7 +25,7 @@ Thumbs.db
 # Config - sensitive
 config.json
 .feishu_credentials.json
-feishu_config.json
+.feishu_config.json
 ./resource
 
 # Virtual env

@@ -103,17 +103,23 @@ def get_text_value(field) -> Optional[str]:
     return str(field) if field else None
 
 
-def read_feishu_credentials(credentials_file: str = ".feishu_credentials.json") -> Dict[str, str]:
-    """读取飞书凭证 - 支持两种格式"""
-    # 优先使用feishu_config.json
-    config_file = "feishu_config.json"
+def read_feishu_credentials(credentials_file: str = ".feishu_credentials.json") -> Dict[str, Any]:
+    """读取飞书凭证和配置 - 支持两种格式"""
+    # 优先使用.feishu_config.json
+    config_file = ".feishu_config.json"
     if os.path.exists(config_file):
         with open(config_file, 'r') as f:
             config = json.load(f)
-        return {
+        result = {
             'app_id': config.get('app_id', ''),
             'app_secret': config.get('app_secret', '')
         }
+        # 添加表格配置
+        if 'ranking_topic_table' in config:
+            result['ranking_topic_table'] = config['ranking_topic_table']
+        if 'ranking_make_table' in config:
+            result['ranking_make_table'] = config['ranking_make_table']
+        return result
 
     # 回退到旧格式
     if not os.path.exists(credentials_file):
@@ -124,14 +130,26 @@ def read_feishu_credentials(credentials_file: str = ".feishu_credentials.json") 
 
 
 def read_topic_table(credentials_file: str = ".feishu_credentials.json",
-                     topic_url: str = "https://my.feishu.cn/wiki/BruDwQWMliKGaSkYFu1co2S3nNc?table=tbldMoja48PTPkA1&view=vewnJAbwJw") -> List[Dict[str, Any]]:
+                     topic_url: str = None) -> List[Dict[str, Any]]:
     """读取ranking主题表格"""
     print("📊 读取ranking主题表格...")
 
     creds = read_feishu_credentials(credentials_file)
+
+    # 优先使用配置文件中的表格配置
+    if 'ranking_topic_table' in creds:
+        table_config = creds['ranking_topic_table']
+        app_id = table_config.get('app_id', '')
+        table_id = table_config.get('table_id', '')
+        view_id = table_config.get('view_id', '')
+    elif topic_url:
+        reader = FeishuBitableReader(creds['app_id'], creds['app_secret'])
+        app_id, table_id, view_id = reader.parse_table_url(topic_url)
+    else:
+        raise ValueError("未找到飞书表格配置，请在 .feishu_config.json 中配置 ranking_topic_table")
+
     reader = FeishuBitableReader(creds['app_id'], creds['app_secret'])
 
-    app_id, table_id, view_id = reader.parse_table_url(topic_url)
     records = reader.read_table_data(app_id, table_id, view_id)
 
     # 筛选待处理记录：创建草稿时间为空且添加时间不为空
@@ -154,14 +172,26 @@ def read_topic_table(credentials_file: str = ".feishu_credentials.json",
 
 
 def read_production_table(credentials_file: str = ".feishu_credentials.json",
-                         prod_url: str = "https://my.feishu.cn/wiki/BruDwQWMliKGaSkYFu1co2S3nNc?table=tblBXfl6Vf4oAoN3&view=vewQ7iGMNy") -> Dict[str, List[Dict[str, Any]]]:
+                         prod_url: str = None) -> Dict[str, List[Dict[str, Any]]]:
     """读取ranking制作表格"""
     print("📊 读取ranking制作表格...")
 
     creds = read_feishu_credentials(credentials_file)
+
+    # 优先使用配置文件中的表格配置
+    if 'ranking_make_table' in creds:
+        table_config = creds['ranking_make_table']
+        app_id = table_config.get('app_id', '')
+        table_id = table_config.get('table_id', '')
+        view_id = table_config.get('view_id', '')
+    elif prod_url:
+        reader = FeishuBitableReader(creds['app_id'], creds['app_secret'])
+        app_id, table_id, view_id = reader.parse_table_url(prod_url)
+    else:
+        raise ValueError("未找到飞书表格配置，请在 .feishu_config.json 中配置 ranking_make_table")
+
     reader = FeishuBitableReader(creds['app_id'], creds['app_secret'])
 
-    app_id, table_id, view_id = reader.parse_table_url(prod_url)
     records = reader.read_table_data(app_id, table_id, view_id)
 
     # 构建"编号"到制作记录的映射
@@ -248,17 +278,26 @@ if __name__ == "__main__":
 
 
 
-def update_feishu_record(record_id: str, create_time: str, 
+def update_feishu_record(record_id: str, create_time: str,
                          credentials_file: str = ".feishu_credentials.json",
-                         topic_url: str = "https://my.feishu.cn/wiki/BruDwQWMliKGaSkYFu1co2S3nNc?table=tbldMoja48PTPkA1&view=vewnJAbwJw") -> bool:
+                         topic_url: str = None) -> bool:
     """更新飞书表格中的创建草稿时间"""
     import requests
-    
+
     creds = read_feishu_credentials(credentials_file)
-    reader = FeishuBitableReader(creds['app_id'], creds['app_secret'])
-    
-    app_id, table_id, view_id = reader.parse_table_url(topic_url)
-    
+
+    # 优先使用配置文件中的表格配置
+    if 'ranking_topic_table' in creds:
+        table_config = creds['ranking_topic_table']
+        app_id = table_config.get('app_id', '')
+        table_id = table_config.get('table_id', '')
+        view_id = table_config.get('view_id', '')
+    elif topic_url:
+        reader = FeishuBitableReader(creds['app_id'], creds['app_secret'])
+        app_id, table_id, view_id = reader.parse_table_url(topic_url)
+    else:
+        raise ValueError("未找到飞书表格配置，请在 .feishu_config.json 中配置 ranking_topic_table")
+
     try:
         # 获取tenant_access_token
         token_response = requests.post(

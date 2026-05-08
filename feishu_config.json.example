@@ -1,0 +1,14 @@
+{
+  "app_id": "your_feishu_app_id_here",
+  "app_secret": "your_feishu_app_secret_here",
+  "ranking_topic_table": {
+    "url": "https://my.feishu.cn/wiki/BruDwQWMliKGaSkYFu1co2S3nNc",
+    "table_id": "tbldMoja48PTPkA1",
+    "view_id": "vewnJAbwJw"
+  },
+  "ranking_make_table": {
+    "url": "https://my.feishu.cn/wiki/BruDwQWMliKGaSkYFu1co2S3nNc",
+    "table_id": "tblBXfl6Vf4oAoN3",
+    "view_id": "vewQ7iGMNy"
+  }
+}

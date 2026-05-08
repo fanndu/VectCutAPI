@@ -132,18 +132,18 @@ def save_draft_background(draft_id, draft_folder, task_id):
                 material_name = video.material_name
                 
                 if video.material_type == 'photo':
-                    # Use helper function to build path
+                    # Use helper function to build path (use same path as video: assets/video)
                     if draft_folder:
-                        video.replace_path = build_asset_path(draft_folder, draft_id, "image", material_name)
+                        video.replace_path = build_asset_path(draft_folder, draft_id, "video", material_name)
                     if not remote_url:
                         logger.warning(f"Image file {material_name} has no remote_url, skipping download.")
                         continue
-                    
-                    # Add image download task
+
+                    # Add image download task (use same path as video: assets/video)
                     download_tasks.append({
                         'type': 'image',
                         'func': download_file,
-                        'args': (remote_url, os.path.join(current_dir, f"{draft_id}/assets/image/{material_name}")),
+                        'args': (remote_url, os.path.join(current_dir, f"{draft_id}/assets/video/{material_name}")),
                         'material': video
                     })
                 
@@ -633,13 +633,13 @@ def download_script(draft_id: str, draft_folder: str = None, script_data: Dict =
                 material_name = video['material_name']
                 
                 if video['type'] == 'photo':
-                    # Use helper function to build path
+                    # Use helper function to build path (use same path as video: assets/video)
                     if draft_folder:
-                        video['path'] = build_asset_path(draft_folder, draft_id, "image", material_name)
+                        video['path'] = build_asset_path(draft_folder, draft_id, "video", material_name)
                     if not remote_url:
                         logger.warning(f"Image file {material_name} has no remote_url, skipping download.")
                         continue
-                    
+
                     # Add image download task
                     download_tasks.append({
                         'type': 'image',

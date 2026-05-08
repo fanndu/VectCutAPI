@@ -1,17 +1,34 @@
+# Python
 __pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
 ignored
 
+# Build
 build/
 dist/
 *.egg-info/
 
+# IDE
 .vscode/
 .idea/
-.DS_Store
+*.swp
+*.swo
+*~
 
+# OS
+.DS_Store
+Thumbs.db
+
+# Config - sensitive
 config.json
+.feishu_credentials.json
+feishu_config.json
 ./resource
 
+# Virtual env
 .venv/
 venv/
 venv-vectcut/
@@ -19,3 +36,15 @@ tmp/
 
 # Test drafts
 dfd_cat_*/
+
+# Cache
+Cache/
+*.log
+server.log
+
+# Temporary configs
+draft_config_*.json
+draft_config_temp.json
+draft_config_current.json
+draft_config_feishu.json
+generated_drafts.json

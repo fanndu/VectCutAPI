@@ -1,5 +1,6 @@
 import os
 import uuid
+import shutil
 import pyJianYingDraft as draft
 import time
 from settings.local import IS_CAPCUT_ENV
@@ -113,7 +114,7 @@ def add_image_impl(
     # Generate material_name but don't download the image
     material_name = f"image_{url_to_hash(image_url)}.png"
     
-    # Build draft_image_path
+    # Build draft_image_path (use same path as video: assets/video)
     draft_image_path = None
     if draft_folder:
         # Detect input path type and process
@@ -121,16 +122,29 @@ def add_image_impl(
             # Windows path processing
             windows_drive, windows_path = re.match(r'([a-zA-Z]:)(.*)', draft_folder).groups()
             parts = [p for p in windows_path.split('\\') if p]  # Split path and filter empty parts
-            draft_image_path = os.path.join(windows_drive, *parts, draft_id, "assets", "image", material_name)
+            draft_image_path = os.path.join(windows_drive, *parts, draft_id, "assets", "video", material_name)
             # Normalize path (ensure consistent separators)
             draft_image_path = draft_image_path.replace('/', '\\')
         else:
             # macOS/Linux path processing
-            draft_image_path = os.path.join(draft_folder, draft_id, "assets", "image", material_name)
-        
+            draft_image_path = os.path.join(draft_folder, draft_id, "assets", "video", material_name)
+
         # Print path information
         print('replace_path:', draft_image_path)
-    
+
+        # 确保目标目录存在
+        os.makedirs(os.path.dirname(draft_image_path), exist_ok=True)
+
+        # 复制图片文件到草稿目录
+        if os.path.exists(image_url):
+            try:
+                shutil.copy2(image_url, draft_image_path)
+                print(f'图片已复制到: {draft_image_path}')
+            except Exception as e:
+                print(f'复制图片失败: {e}')
+        else:
+            print(f'源图片不存在: {image_url}')
+
     # Create image material
     if draft_image_path:
         image_material = draft.Video_material(path=None, material_type='photo', replace_path=draft_image_path, remote_url=image_url, material_name=material_name)

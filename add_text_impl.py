@@ -20,6 +20,8 @@ def add_text_impl(
     track_name: str = "text_main",
     vertical: bool = False,
     font_alpha: float = 1.0,
+    # Text alignment parameter
+    alignment: str = "center",  # "left", "center", "right"
     # Border parameters
     border_alpha: float = 1.0,
     border_color: str = "#000000",
@@ -203,6 +205,10 @@ def add_text_impl(
         pixel_fixed_height = int(fixed_height * script.height)
     
     # Create text segment (using configurable parameters)
+    # Map alignment string to numeric value
+    alignment_map = {"left": 0, "center": 1, "right": 2}
+    align_value = alignment_map.get(alignment, 1)  # Default to center (1)
+
     text_segment = draft.Text_segment(
         text,
         trange(f"{start}s", f"{end-start}s"),
@@ -210,7 +216,7 @@ def add_text_impl(
         style=draft.Text_style(
             color=rgb_color,
             size=font_size,
-            align=1,
+            align=align_value,  # Use alignment parameter
             vertical=vertical,  # Set whether to display vertically
             alpha=font_alpha  # Set transparency
         ),

@@ -649,6 +649,7 @@ class Text_segment(Visual_segment):
                 "bold": self.style.bold,
                 "italic": self.style.italic,
                 "underline": self.style.underline,
+                "align": self.style.align,
                 "strokes": [self.border.export_json()] if self.border else []
             }
             
@@ -735,7 +736,7 @@ class Text_segment(Visual_segment):
             "font_name": "",
             "font_path": "",
             "font_resource_id": "",
-            "font_size": 15.0,
+            "font_size": self.style.size,
             "font_source_platform": 0,
             "font_team_id": "",
             "font_title": "none",
